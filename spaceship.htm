@@ -282,6 +282,14 @@ void main(void) {
         background = new Background(fbo.texture(0));
         spaceship = new Spaceship();
 
+        // Create and load the sounds.
+        sounds = new Sounds();
+        sounds.init();
+        sounds.loadSound('shoot', 'sounds/shoot.wav');
+        sounds.loadSound('bang', 'sounds/bang.wav');
+        sounds.loadSound('bang', 'sounds/invaderkilled.wav');
+        sounds.loadSound('explosion', 'sounds/explosion.wav');
+
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -322,16 +330,16 @@ void main(void) {
     <nav class="collapse navbar-collapse bs-navbar-collapse">
       <ul class="nav navbar-nav">
         <li>
-          <a href="../getting-started/">New Game</a>
+          <a id="muteLink" href="#" onclick="webGLStart()">New Game</a>
         </li>
         <li>
-          <a href="../css/">Score</a>
-        </li>
-        <li class="active">
-          <a href="../components/">Life</a>
+          <a id="muteLink" href="#">Score</a>
         </li>
         <li>
-          <a href="../javascript/">Power</a>
+          <a id="muteLink" href="#">Life</a>
+        </li>
+        <li>
+          <a id="muteLink" href="#">Power</a>
         </li>
         <li>
           <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
@@ -340,7 +348,6 @@ void main(void) {
     </nav>
   </div>
 </header>
-
 
     <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
 
