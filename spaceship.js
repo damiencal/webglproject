@@ -17,6 +17,8 @@ function initSpaceshipShader() {
      // adresse de la variable uniforme uOffset dans le shader
     spaceshipShader.positionUniform = gl.getUniformLocation(spaceshipShader, "uPosition");
 
+    spaceshipShader.maTextureUniform = gl.getUniformLocation(spaceshipShader, "uMaTexture");
+
     console.log("spaceship shader initialized");
 }
 
@@ -71,6 +73,7 @@ Spaceship.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
+	this.maTexture = initTexture("img/test.png");
 }
 
 Spaceship.prototype.setParameters = function(elapsed) {
@@ -86,6 +89,10 @@ Spaceship.prototype.shader = function() {
 }
 
 Spaceship.prototype.sendUniformVariables = function() {
+	gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
+    gl.uniform1i(spaceshipShader.maTextureUniform, 0);
+
 	gl.uniform2fv(spaceshipShader.positionUniform,this.position);
 }
 
