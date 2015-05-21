@@ -290,6 +290,9 @@ void main(void) {
         sounds.loadSound('bang', 'sounds/invaderkilled.wav');
         sounds.loadSound('explosion', 'sounds/explosion.wav');
 
+        //colisionhandler object
+        var colisionHandler = new ColisionHandler();
+
         // la couleur de fond sera noire
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -360,8 +363,8 @@ void main(void) {
     </script>
     <script>
                 function toggleMute() {
-                game.mute();
-                document.getElementById("muteLink").innerText = game.sounds.mute ? "unmute" : "mute";
+                mute();
+                document.getElementById("muteLink").innerText = sounds.mute ? "unmute" : "mute";
             }
     </script>
 </html>
