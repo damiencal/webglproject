@@ -73,7 +73,7 @@ Spaceship.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
-	this.maTexture = initTexture("img/test.png");
+	this.maTexture = initTexture("img/ship.png");
 }
 
 Spaceship.prototype.setParameters = function(elapsed) {
@@ -89,6 +89,7 @@ Spaceship.prototype.shader = function() {
 }
 
 Spaceship.prototype.sendUniformVariables = function() {
+	//Texture
 	gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
     gl.uniform1i(spaceshipShader.maTextureUniform, 0);

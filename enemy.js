@@ -1,7 +1,6 @@
 var enemyShader;
 
 function initEnemyShader() {
-	
 	enemyShader = initShaders("enemy-vs","enemy-fs");
 
     // active ce shader
@@ -17,6 +16,8 @@ function initEnemyShader() {
 
      // adresse de la variable uniforme uOffset dans le shader
     enemyShader.positionUniform = gl.getUniformLocation(enemyShader, "uPosition");
+
+    spaceshipShader.maTextureUniform = gl.getUniformLocation(spaceshipShader, "uMaTextureEnemy");
 
     console.log("enemy shader initialized");
 }
@@ -72,6 +73,8 @@ Enemy.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.5, 0.7];
+	randomInt = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+	this.maTexture = initTexture("img/enemy" + randomInt + ".png");
 }
 
 Enemy.prototype.setParameters = function(elapsed) {
@@ -87,6 +90,11 @@ Enemy.prototype.shader = function() {
 }
 
 Enemy.prototype.sendUniformVariables = function() {
+	//Texture
+	gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
+    gl.uniform1i(spaceshipShader.maTextureUniform, 0);
+
 	gl.uniform2fv(enemyShader.positionUniform,this.position);
 }
 
