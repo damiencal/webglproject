@@ -73,6 +73,7 @@ Enemy.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.5, 1.0];
+	this.status = "alive";
 	randomInt = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
 	this.maTexture = initTexture("img/enemy" + randomInt + ".png");
 }
@@ -83,6 +84,10 @@ Enemy.prototype.setParameters = function(elapsed) {
 
 Enemy.prototype.setPosition = function(x,y) {
 	this.position = [x,y];
+}
+
+Enemy.prototype.setStatus = function(new_status) {
+	this.status = new_status;
 }
 
 Enemy.prototype.setImage = function(new_image) {
