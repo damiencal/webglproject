@@ -500,13 +500,16 @@ void main(void) {
     {
         for (i=0; i<missiles.length;i++)
         {
-            var newy = missiles[i].y + VITESSE_MISSILE;
+            var missile = missiles[i];
+            var newy = missile.y + VITESSE_MISSILE;
             if (newy > 1.0)
                     missiles.splice(i, 1);
             else
-                missiles[i].y = newy;
-            var missile = missiles[i];
-            missile.setPosition(missile.x, newy);
+                missile.y = newy;
+            if (missile)
+                missile.setPosition(missile.x, newy);
+            else
+                missile.splice(i, 1);
         }
     }
 
@@ -704,6 +707,7 @@ void main(void) {
         {
             document.getElementById("life").innerHTML = 0;
             alert("Game Over");
+            window.location.reload();
         }
     }
 
@@ -745,7 +749,7 @@ void main(void) {
     <nav class="collapse navbar-collapse bs-navbar-collapse">
       <ul class="nav navbar-nav">
         <li>
-          <a id="muteLink" href="#" onclick="webGLStart()">New Game</a>
+          <a id="muteLink" href="#" onclick="window.location.reload()">New Game</a>
         </li>
         <li>
           <a id="muteLink" href="#">Score</a>
