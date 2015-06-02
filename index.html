@@ -445,8 +445,8 @@ void main(void) {
         spaceship = new Spaceship();
         shoot = new Shoot();
 
-        for (var i=0; i<20; i++)
-            createEnnemies();
+        for (var i=0; i<10; i++)
+            createEnemy();
 
         // la couleur de fond sera noire
         //gl.clearColor(0.0, 1.0, 0.0, 1.0);
@@ -467,7 +467,7 @@ void main(void) {
         tick();
     }
 
-    function createEnnemies ()
+    function createEnemy ()
     {
         enemies.push(new Enemy);
         var indice = enemies.length;    // indice du vaisseau dans le tableau des vaisseaux
@@ -574,6 +574,7 @@ void main(void) {
                 var toto = i;
                 setTimeout(function () {enemies.splice(toto, 1);}, 500);
                 enemies[i].status = "erased";
+                createEnemy();
             }
         }
     }
