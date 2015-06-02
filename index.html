@@ -353,6 +353,7 @@ void main(void) {
                 missiles.push(new Shoot);   // Ajout d'un missiles à la liste des missiles
                 missiles[missiles.length-1].x = spaceship.position[0];
                 missiles[missiles.length-1].y = spaceship.position[1];
+                missiles[missiles.length-1].setPosition(missiles[missiles.length-1].x, missiles[missiles.length-1].y);
                 audio.src="sounds/shoot.wav";
                 audio.play();
                 keyAlreadyPressed = "active";
@@ -409,7 +410,6 @@ void main(void) {
         handleKeys();
 
         animateMissiles();
-
         animateEnemies();
         destroyEnemies();
 
@@ -441,9 +441,6 @@ void main(void) {
 
         for (var i=0; i<20; i++)
             createEnnemies();
-
-        //colisionhandler object
-        var colisionHandler = new ColisionHandler();
 
         // la couleur de fond sera noire
         //gl.clearColor(0.0, 1.0, 0.0, 1.0);
@@ -543,16 +540,34 @@ void main(void) {
         for (var i=0; i<enemies.length; i++)
         {
 
-            // 1. Cas d'un vaisseau ennemi qui doit exploser
-            if (colisionBordEcran(i, enemies[i]) || colisionSpaceship(i, enemies[i]) || colisionTir(i, enemies[i]))
+            var exploding = false;
+
+            if (enemies[i].status == "alive")
+            {
+                for(var j=0; j<missiles.length; j++)
+                {
+                    if (colisionTir(enemies[i], j, missiles[j]))
+                        break;
+                }
+
+                colisionBordEcran(enemies[i]);
+                colisionSpaceship(enemies[i]);
+            }
+
+
+            if (enemies[i].status == "exploding")
+            {
+                explosion(enemies[i]);
+                enemies.splice(i, 1);
                 playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
+            }
         }
     }
 
 
     // Fonction qui détecte si le vaisseau passé en paramètre entre en colision avec le spaceship principal
-    // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
-    function colisionSpaceship (index, curantEnemy)
+    // Si tel est le cas : On passe son statut à "exploding"
+    function colisionSpaceship (curantEnemy)
     {
         // On considère la forme du carré
         //  X1;Y2---------X2;Y2
@@ -561,8 +576,6 @@ void main(void) {
         //  X1;Y1---------X2;Y1
         //
         // Constante qui défini le stade d'explosion du vaisseau
-        var INTERVALLES_EXPLOSION = new Array(0.0, 0.01, 0.03, 0.05);
-        var exploding = false;
 
         // Définition des angles du carré Spaceship
         var spaceshipX1 = spaceship.position[0]-spaceship.width;
@@ -576,74 +589,42 @@ void main(void) {
         var enemyY1 = curantEnemy.y;
         var enemyY2 = curantEnemy.y+curantEnemy.height;
 
-        //Colision du vaisseau avec le spaceship (explosion du vaisseau)
+        var distanceExplosion = 0.05;
 
         // Si le vaisseau rentre en colision avec le spaceship
-        idImage = INTERVALLES_EXPLOSION.length;
-
-        for (k=0; k<INTERVALLES_EXPLOSION.length; k++)
+        if (((spaceshipX1 < enemyX2+distanceExplosion && spaceshipX1 > enemyX1-distanceExplosion) ||
+        (spaceshipX2 < enemyX2+distanceExplosion && spaceshipX2 > enemyX1-distanceExplosion))
+        &&
+       ((spaceshipY1 < enemyY2+distanceExplosion && spaceshipY1 > enemyY1-distanceExplosion) ||
+        (spaceshipY2 < enemyY2+distanceExplosion && spaceshipY2 > enemyY1-distanceExplosion)))
         {
-            intervalleK = INTERVALLES_EXPLOSION[k];
-            // On charge l'image qui correspond à son stade d'explosion
-            if (((spaceshipX1 < enemyX2+intervalleK && spaceshipX1 > enemyX1-intervalleK) ||
-            (spaceshipX2 < enemyX2+intervalleK && spaceshipX2 > enemyX1-intervalleK))
-            &&
-           ((spaceshipY1 < enemyY2+intervalleK && spaceshipY1 > enemyY1-intervalleK) ||
-            (spaceshipY2 < enemyY2+intervalleK && spaceshipY2 > enemyY1-intervalleK)))
-            {
-                if (k==0)   // Si le vaisseau
-                    enemies.splice(index, 1);   // On détruit l'objet vaisseau
-                curantEnemy.setImage("exploding"+idImage+".png"); // On actualise l'image de l'objet vaisseau
-                exploding =  true;
-            }
-            idImage--;
+            curantEnemy.status = "exploding";
         }
-        return exploding;
     }
 
     // Fonction qui détecte si le vaisseau passé en paramètre entre en colision avec le bord inférieur de l'écran
-    // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
-    function colisionBordEcran (index, curantEnemy)
+    // Si tel est le cas : On passe son statut à "exploding"
+    function colisionBordEcran (curantEnemy)
     {
         // Constante qui défini le stade d'explosion du vaisseau
-        var INTERVALLES_EXPLOSION = new Array(0.825, 0.815, 0.800, 0.785, 0.770);
-        var exploding = false;
+        var distanceExplosion = 0.770;
 
-        // 1.2 Colision du vaisseau avec le bord inférieur de l'écran (explosion du vaisseau)
-        // Si le vaisseau doit exploser
-        if (curantEnemy.y < -(INTERVALLES_EXPLOSION[INTERVALLES_EXPLOSION.length-1]))
-        {
-            // On charge l'image qui correspond à son stade d'explosion
-            var idImage = INTERVALLES_EXPLOSION.length; // Trick pour éviter de recharger les images précédentes
-            for (j=0; j<INTERVALLES_EXPLOSION.length; j++)
-            {
-                if (curantEnemy.y < -(INTERVALLES_EXPLOSION[j]))
-                {
-                    if (j==0)
-                        enemies.splice(index, 1);   // On détruit l'objet vaisseau
-                    curantEnemy.setImage("exploding"+idImage+".png"); // On actualise l'image de l'objet vaisseau
-                    exploding = true;
-                }
-                idImage--;
-            }
-        }
-        return exploding;
+        // Si le vaisseau ennemi entre en colision avec le bord inférieur de l'écran
+        if (curantEnemy.y < -distanceExplosion)
+            curantEnemy.status = "exploding";
     }
 
     // Fonction qui détecte si le vaisseau passé en paramètre entre en colision avec un shoot du spaceship
     // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
-    function colisionTir (index, curantEnemy, shoot)
+    function colisionTir (curantEnemy, indexMissile, missile)
     {
-        /*
-        // Constante qui défini le stade d'explosion du vaisseau
-        var INTERVALLES_EXPLOSION = new Array(0.000, 0.005, 0.01, 0.015, 0.02);
 
         // Constante de la taille des carrés liés à la taille de l'image
         var LARGEUR_CARRE = 0.19;
         var HAUTEUR_CARRE = 0.19;
 
-        var LARGEUR_TIR = 0.1;
-        var HAUTEUR_TIR = 0.15;
+        var LARGEUR_TIR = 0.08;
+        var HAUTEUR_TIR = 0.08;
 
         // Définition des angles du carré Enemy
         var enemyX1 = curantEnemy.x-LARGEUR_CARRE;
@@ -652,34 +633,31 @@ void main(void) {
         var enemyY2 = curantEnemy.y+HAUTEUR_CARRE;
 
         // Définition des angles du missile
-        var missileX1 = missile.position[0]-LARGEUR_CARRE;
-        var missileX2 = missile.position[0];
-        var missileY1 = missile.position[1];
-        var missileY2 = missile.position[1]+HAUTEUR_CARRE;
+        var missileX1 = missile.x-LARGEUR_TIR;
+        var missileX2 = missile.x;
+        var missileY1 = missile.y;
+        var missileY2 = missile.y+HAUTEUR_TIR;
 
-        //Colision du vaisseau avec le spaceship (explosion du vaisseau)
+        var distanceExplosion = 0.03;
 
-        // Si le vaisseau rentre en colision avec le spaceship
-        idImage = INTERVALLES_EXPLOSION.length;
-        var exploding=false;
-        for (k=0; k<INTERVALLES_EXPLOSION.length; k++)
+        // On charge l'image qui correspond à son stade d'explosion
+        if (((missileX1 < enemyX2+distanceExplosion && missileX1 > enemyX1-distanceExplosion) ||
+        (missileX2 < enemyX2+distanceExplosion && missileX2 > enemyX1-distanceExplosion))
+        &&
+       ((missileY1 < enemyY2+distanceExplosion && missileY1 > enemyY1-distanceExplosion) ||
+        (missileY2 < enemyY2+distanceExplosion && missileY2 > enemyY1-distanceExplosion)))
         {
-            intervalleK = INTERVALLES_EXPLOSION[k];
-            // On charge l'image qui correspond à son stade d'explosion
-            if (((spaceshipX1 < enemyX2+intervalleK && spaceshipX1 > enemyX1-intervalleK) ||
-            (spaceshipX2 < enemyX2+intervalleK && spaceshipX2 > enemyX1-intervalleK))
-            &&
-           ((spaceshipY1 < enemyY2+intervalleK && spaceshipY1 > enemyY1-intervalleK) ||
-            (spaceshipY2 < enemyY2+intervalleK && spaceshipY2 > enemyY1-intervalleK)))
-            {
-                if (k==0)   // Si le vaisseau
-                    enemies.splice(index, 1);   // On détruit l'objet vaisseau
-                curantEnemy.setImage("exploding"+idImage+".png"); // On actualise l'image de l'objet vaisseau
-                break;
+            curantEnemy.status = "exploding";
+            missiles.splice(indexMissile, 1);
+        }
+    }
 
-            }
-            idImage--;
-        }*/
+    function explosion (explodingEnemy)
+    {
+        var NB_STADE_EXPLOSION = 5;
+        explodingEnemy.setImage("exploding");
+        for (var i=NB_STADE_EXPLOSION; 0<i; i--)
+            setTimeout(function(){ explodingEnemy.setImage("exploding"+i+".png"); }, 200);
     }
 
     function playSound (soundUrl)
