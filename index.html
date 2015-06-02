@@ -565,10 +565,15 @@ void main(void) {
             if (enemies[i].status == "exploding")
             {
                 explosion(enemies[i]);
-                setInterval(function () {
-                    enemies.splice(i, 1);
-                }, 200*5);
+                enemies[i].status = "exploded";
                 playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
+            }
+
+            if (enemies[i].status == "exploded")
+            {
+                var toto = i;
+                setTimeout(function () {enemies.splice(toto, 1);}, 500);
+                enemies[i].status = "erased";
             }
         }
     }
@@ -598,14 +603,12 @@ void main(void) {
         var enemyY1 = curantEnemy.y;
         var enemyY2 = curantEnemy.y+curantEnemy.height;
 
-        var distanceExplosion = 0.05;
-
         // Si le vaisseau rentre en colision avec le spaceship
-        if (((spaceshipX1 < enemyX2+distanceExplosion && spaceshipX1 > enemyX1-distanceExplosion) ||
-        (spaceshipX2 < enemyX2+distanceExplosion && spaceshipX2 > enemyX1-distanceExplosion))
+        if (((spaceshipX1 < enemyX2 && spaceshipX1 > enemyX1) ||
+        (spaceshipX2 < enemyX2 && spaceshipX2 > enemyX1))
         &&
-       ((spaceshipY1 < enemyY2+distanceExplosion && spaceshipY1 > enemyY1-distanceExplosion) ||
-        (spaceshipY2 < enemyY2+distanceExplosion && spaceshipY2 > enemyY1-distanceExplosion)))
+       ((spaceshipY1 < enemyY2 && spaceshipY1 > enemyY1) ||
+        (spaceshipY2 < enemyY2 && spaceshipY2 > enemyY1)))
         {
             curantEnemy.status = "exploding";
         }
@@ -615,11 +618,8 @@ void main(void) {
     // Si tel est le cas : On passe son statut à "exploding"
     function colisionBordEcran (curantEnemy)
     {
-        // Constante qui défini le stade d'explosion du vaisseau
-        var distanceExplosion = 0.770;
-
         // Si le vaisseau ennemi entre en colision avec le bord inférieur de l'écran
-        if (curantEnemy.y < -distanceExplosion)
+        if (curantEnemy.y < spaceship.position[1])
             curantEnemy.status = "exploding";
     }
 
@@ -629,25 +629,17 @@ void main(void) {
     // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
     function colisionTir (curantEnemy, indexMissile, missile)
     {
-
-        // Constante de la taille des carrés liés à la taille de l'image
-        var LARGEUR_CARRE = 0.19;
-        var HAUTEUR_CARRE = 0.19;
-
-        var LARGEUR_TIR = 0.08;
-        var HAUTEUR_TIR = 0.08;
-
         // Définition des angles du carré Enemy
-        var enemyX1 = curantEnemy.x-LARGEUR_CARRE;
+        var enemyX1 = curantEnemy.x-curantEnemy.width;
         var enemyX2 = curantEnemy.x;
         var enemyY1 = curantEnemy.y;
-        var enemyY2 = curantEnemy.y+HAUTEUR_CARRE;
+        var enemyY2 = curantEnemy.y+curantEnemy.height;
 
         // Définition des angles du missile
-        var missileX1 = missile.x-LARGEUR_TIR;
+        var missileX1 = missile.x-missile.width;
         var missileX2 = missile.x;
         var missileY1 = missile.y;
-        var missileY2 = missile.y+HAUTEUR_TIR;
+        var missileY2 = missile.y+missile.height;
 
         var distanceExplosion = 0.03;
 
@@ -665,8 +657,27 @@ void main(void) {
 
     function explosion (ennemy)
     {
+        var intervalleExplosion = 75;
+        setTimeout(function () {
         ennemy.maTexture = ennemy.exploding[0];
         ennemy.setupTexture();
+        }, intervalleExplosion*0);
+        setTimeout(function () {
+        ennemy.maTexture = ennemy.exploding[1];
+        ennemy.setupTexture();
+        }, intervalleExplosion*1);
+        setTimeout(function () {
+        ennemy.maTexture = ennemy.exploding[2];
+        ennemy.setupTexture();
+        }, intervalleExplosion*2);
+        setTimeout(function () {
+        ennemy.maTexture = ennemy.exploding[3];
+        ennemy.setupTexture();
+        }, intervalleExplosion*3);
+        setTimeout(function () {
+        ennemy.maTexture = ennemy.exploding[4];
+        ennemy.setupTexture();
+        }, intervalleExplosion*4);
     }
 
     function playSound (soundUrl)
