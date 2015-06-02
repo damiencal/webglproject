@@ -256,6 +256,10 @@ void main(void) {
     var enemies = new Array();      // Tableau qui contient les objets Vaisseau
     var missiles = new Array();     // Tableau qui contient les objets missile
 
+    // Paramètres du jeu
+    life = 5;
+    score = 0;
+
     // Constantes pour les vaisseaux ennemis
     var NOMBRE_ENNEMIS = 11;        // Nombre d'ennemis dans le niveau
     var VITESSE_VAISSEAUX = 0.003;  // Vitesse des vaisseaux ennemis
@@ -276,6 +280,7 @@ void main(void) {
 
     // Variable pour jouer les sons
     var audio = new Audio();
+    var mute = false;
 
 
     function drawScene() {
@@ -360,8 +365,7 @@ void main(void) {
                 missiles[missiles.length-1].x = spaceship.position[0];
                 missiles[missiles.length-1].y = spaceship.position[1];
                 missiles[missiles.length-1].setPosition(missiles[missiles.length-1].x, missiles[missiles.length-1].y);
-                audio.src="sounds/shoot.wav";
-                audio.play();
+                playSound("sounds/shoot.wav");
                 keyAlreadyPressed = "active";
             }
             else if (keyAlreadyPressed == "relache")
@@ -445,8 +449,13 @@ void main(void) {
         spaceship = new Spaceship();
         shoot = new Shoot();
 
-        for (var i=0; i<10; i++)
+        // Initialisation des ennemis
+        for (var i=0; i<16; i++)
             createEnemy();
+
+        // Initialisation des paramètres du jeu
+        initLife();     // Initialisation de la vie
+        initScore();    // Initialisation des scores
 
         // la couleur de fond sera noire
         //gl.clearColor(0.0, 1.0, 0.0, 1.0);
@@ -571,8 +580,8 @@ void main(void) {
 
             if (enemies[i].status == "exploded")
             {
-                var toto = i;
-                setTimeout(function () {enemies.splice(toto, 1);}, 500);
+                var indice = i;
+                setTimeout(function () {enemies.splice(indice, 1);}, 500);
                 enemies[i].status = "erased";
                 createEnemy();
             }
@@ -612,6 +621,7 @@ void main(void) {
         (spaceshipY2 < enemyY2 && spaceshipY2 > enemyY1)))
         {
             curantEnemy.status = "exploding";
+            decreaseLife();
         }
     }
 
@@ -621,7 +631,10 @@ void main(void) {
     {
         // Si le vaisseau ennemi entre en colision avec le bord inférieur de l'écran
         if (curantEnemy.y < spaceship.position[1])
+        {
             curantEnemy.status = "exploding";
+            decreaseLife();
+        }
     }
 
 
@@ -653,6 +666,7 @@ void main(void) {
         {
             curantEnemy.status = "exploding";
             missiles.splice(indexMissile, 1);
+            increaseScore();
         }
     }
 
@@ -681,12 +695,35 @@ void main(void) {
         }, intervalleExplosion*4);
     }
 
-    function playSound (soundUrl)
-    {
-        audio.src=soundUrl;
-        audio.play();
+    function initLife (){document.getElementById("life").innerHTML = life;}
+
+    function decreaseLife (){
+        if (1<life)
+            document.getElementById("life").innerHTML = --life;
+        else
+        {
+            document.getElementById("life").innerHTML = 0;
+            alert("Game Over");
+        }
     }
 
+    function initScore (){document.getElementById("score").innerHTML = score;}
+
+    function increaseScore (){document.getElementById("score").innerHTML = ++score;}
+
+/************* Fonctions pour les sons ************/
+    // Joue son trouvé à l'@ de l'URL
+    function playSound (soundUrl)
+    {
+        if (!mute)
+        {
+            audio.src=soundUrl;
+            audio.play();
+        }
+    }
+    // Activte / Désactive les sons
+    function toggleMute ()
+    {mute = !mute;}
 </script>
 
 
@@ -727,19 +764,8 @@ void main(void) {
   </div>
 </header>
 
+    <div>Life : <span id="life"><span></div>
+    <div>Score : <span id="score"><span></div>
     <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
-
 </body>
-    <script>
-            $(document).ready(function() {
-                // This command is used to initialize some elements and make them work properly
-                $.material.init();
-            });
-    </script>
-    <script>
-                function toggleMute() {
-                mute();
-                document.getElementById("muteLink").innerText = sounds.mute ? "unmute" : "mute";
-            }
-    </script>
 </html>
