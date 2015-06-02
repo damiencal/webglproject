@@ -75,11 +75,19 @@ Enemy.prototype.initParameters = function() {
 	this.position = [0.5, 1.0];
 	this.status = "alive";
 	randomInt = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-	this.maTexture = initTexture("img/enemy" + randomInt + ".png");
+	this.exploding = [
+		this.setImage("img/exploding1.png"),
+		this.setImage("img/exploding2.png"),
+		this.setImage("img/exploding3.png"),
+		this.setImage("img/exploding4.png"),
+		this.setImage("img/exploding5.png"),
+	];
+	this.maTexture = this.setImage("img/enemy" + randomInt + ".png");
 }
 
 Enemy.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
+	
 }
 
 Enemy.prototype.setPosition = function(x,y) {
@@ -91,7 +99,10 @@ Enemy.prototype.setStatus = function(new_status) {
 }
 
 Enemy.prototype.setImage = function(new_image) {
-	this.maTexture = initTexture(new_image);
+	gl.enable(gl.BLEND); //Activation de gl.Blend
+	texture = initTexture(new_image);
+	gl.disable(gl.BLEND); //Activation de gl.Blend
+	return texture;
 }
 
 Enemy.prototype.shader = function() {
@@ -99,12 +110,14 @@ Enemy.prototype.shader = function() {
 }
 
 Enemy.prototype.sendUniformVariables = function() {
-	//Texture
+	this.setupTexture();
+	gl.uniform2fv(enemyShader.positionUniform,this.position);
+}
+
+Enemy.prototype.setupTexture = function() {
 	gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D,this.maTexture);
-    gl.uniform1i(spaceshipShader.maTextureUniform, 0);
-
-	gl.uniform2fv(enemyShader.positionUniform,this.position);
+    gl.uniform1i(enemyShader.maTextureUniform, 0);
 }
 
 Enemy.prototype.draw = function() {

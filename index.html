@@ -114,14 +114,20 @@ uniform vec2 uTextureSize; // la taille de la texture
 varying vec2 vTextureCoord; // recuperation de la coord rasterisee
 
 vec3 shade(in vec3 n,in float d) {
+    vec3 ka = vec3(0.0,1.0,1.0);
+    vec3 kd = vec3(0/256,256/256,125/256);
+    vec3 ks = vec3(1.0,1.0,0.0);
+
     vec2 xy = vTextureCoord.xy*2.0-vec2(1.0);
     vec3 v = -normalize(vec3(xy.x,xy.y,1.0)); // vecteur vue
-    vec3 l = normalize(vec3(-0.3,0.0,1.0)); // vecteur lumiÃ¨re (pourrait varier au cours du temps pour de meilleurs effets)
+    vec3 l = normalize(vec3(-0.3,.0,1.0)); // vecteur lumiÃ¨re (pourrait varier au cours du temps pour de meilleurs effets)
+    vec3 li = vec3(1.0,0.3,1.0);
 
+    vec3 r = reflect(l, n);
     // TODO : le shading !
     // la fonction prend en entrÃ©e la normale du terrain et sa profondeur
-
-    return n;
+    //lo = (ka + kd * (normal*l) + ks * (v*r)^q) * (Li/r^2);
+    return (ka + kd * dot(n,l) + ks * pow(dot(v,r), 112.0)) * (li);
 }
 
 vec3 computeNormal() {
@@ -445,8 +451,8 @@ void main(void) {
         // la couleur de fond sera noire
         //gl.clearColor(0.0, 1.0, 0.0, 1.0);
 
-        // active le teste de profondeur
-        gl.enable(gl.DEPTH_TEST);
+        // active le  de profondeur
+        gl.enable(gl.DEtestePTH_TEST);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); //Active la transparance
 
         /* Mouse and keyboard interaction functions */
@@ -490,7 +496,8 @@ void main(void) {
                     missiles.splice(i, 1);
             else
                 missiles[i].y = newy;
-            missiles[i].setPosition(missiles[i].x, newy);
+            var missile = missiles[i];
+            missile.setPosition(missile.x, newy);
         }
     }
 
@@ -558,7 +565,9 @@ void main(void) {
             if (enemies[i].status == "exploding")
             {
                 explosion(enemies[i]);
-                enemies.splice(i, 1);
+                setInterval(function () {
+                    enemies.splice(i, 1);
+                }, 200*5);
                 playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
             }
         }
@@ -614,6 +623,8 @@ void main(void) {
             curantEnemy.status = "exploding";
     }
 
+
+
     // Fonction qui détecte si le vaisseau passé en paramètre entre en colision avec un shoot du spaceship
     // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
     function colisionTir (curantEnemy, indexMissile, missile)
@@ -652,12 +663,10 @@ void main(void) {
         }
     }
 
-    function explosion (explodingEnemy)
+    function explosion (ennemy)
     {
-        var NB_STADE_EXPLOSION = 5;
-        explodingEnemy.setImage("exploding");
-        for (var i=NB_STADE_EXPLOSION; 0<i; i--)
-            setTimeout(function(){ explodingEnemy.setImage("exploding"+i+".png"); }, 200);
+        ennemy.maTexture = ennemy.exploding[0];
+        ennemy.setupTexture();
     }
 
     function playSound (soundUrl)

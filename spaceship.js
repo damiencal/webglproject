@@ -73,7 +73,7 @@ Spaceship.prototype.initParameters = function() {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
-	this.maTexture = initTexture("img/ship.png");
+	this.setImage("img/ship.png");
 }
 
 Spaceship.prototype.setParameters = function(elapsed) {
@@ -86,6 +86,12 @@ Spaceship.prototype.setPosition = function(x,y) {
 
 Spaceship.prototype.shader = function() {
 	return spaceshipShader;
+}
+
+Spaceship.prototype.setImage = function(new_image) {
+	gl.enable(gl.BLEND); //Activation de gl.Blend
+	this.maTexture = initTexture(new_image);
+	gl.disable(gl.BLEND); //Activation de gl.Blend
 }
 
 Spaceship.prototype.sendUniformVariables = function() {
