@@ -257,11 +257,14 @@ void main(void) {
     var missiles = new Array();     // Tableau qui contient les objets missile
 
     // Paramètres du jeu
-    life = 5;
-    score = 0;
+    init_life = 5;
+    life = init_life;
+    init_score = 0;
+    score = init_score;
+    theme = "starwars";
 
     // Constantes pour les vaisseaux ennemis
-    var NOMBRE_ENNEMIS = 11;        // Nombre d'ennemis dans le niveau
+    var NOMBRE_ENNEMIS = 10;        // Nombre d'ennemis dans le niveau
     var VITESSE_VAISSEAUX = 0.003;  // Vitesse des vaisseaux ennemis
 
     var lateralVariation = 0.0;
@@ -446,11 +449,11 @@ void main(void) {
         // init de tous les objets
         heightfield = new Heightfield();
         background = new Background(fbo.texture(0));
-        spaceship = new Spaceship();
+        spaceship = new Spaceship(theme);
         shoot = new Shoot();
 
         // Initialisation des ennemis
-        for (var i=0; i<16; i++)
+        for (var i=0; i<NOMBRE_ENNEMIS; i++)
             createEnemy();
 
         // Initialisation des paramètres du jeu
@@ -478,7 +481,7 @@ void main(void) {
 
     function createEnemy ()
     {
-        enemies.push(new Enemy);
+        enemies.push(new Enemy(theme));
         var indice = enemies.length;    // indice du vaisseau dans le tableau des vaisseaux
 
         // Random de la positionX du vaisseau jusqu'à avoir une coordonées comprise entre 0 et 0.895
@@ -698,7 +701,7 @@ void main(void) {
         }, intervalleExplosion*4);
     }
 
-    function initLife (){document.getElementById("life").innerHTML = life;}
+    function initLife (){document.getElementById("life").innerHTML = init_life;}
 
     function decreaseLife (){
         if (1<life)
@@ -711,9 +714,20 @@ void main(void) {
         }
     }
 
-    function initScore (){document.getElementById("score").innerHTML = score;}
+    function initScore (){document.getElementById("score").innerHTML = init_score;}
 
     function increaseScore (){document.getElementById("score").innerHTML = ++score;}
+
+    // Réinitialise le jeu avec le theme passé en paramètre
+    function resetGame (game_theme) {
+        enemies.splice(0, enemies.length);
+        initLife();
+        initScore();
+        theme = game_theme;
+        spaceship = new Spaceship(theme);
+        for (var i=0; i<NOMBRE_ENNEMIS; i++)
+            createEnemy();
+    }
 
 /************* Fonctions pour les sons ************/
     // Joue son trouvé à l'@ de l'URL
@@ -770,6 +784,8 @@ void main(void) {
 
     <div>Life : <span id="life"><span></div>
     <div>Score : <span id="score"><span></div>
+    <div id="starwars" onclick="resetGame(this.id)">Starwars</div>
+    <div id="requin" onclick="resetGame(this.id)">Requin</div>
     <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
 </body>
 </html>

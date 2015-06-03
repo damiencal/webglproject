@@ -22,8 +22,8 @@ function initSpaceshipShader() {
     console.log("spaceship shader initialized");
 }
 
-function Spaceship() {
-	this.initParameters();
+function Spaceship(theme) {
+	this.initParameters(theme);
 
 	// cree un nouveau buffer sur le GPU et l'active
 	this.vertexBuffer = gl.createBuffer();
@@ -69,11 +69,11 @@ function Spaceship() {
     console.log("spaceship initialized");
 }
 
-Spaceship.prototype.initParameters = function() {
+Spaceship.prototype.initParameters = function(theme) {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.0,-0.7];
-	this.setImage("img/ship.png");
+	this.setImage("img/"+theme+"/ship.png");
 }
 
 Spaceship.prototype.setParameters = function(elapsed) {

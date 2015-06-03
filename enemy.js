@@ -22,8 +22,8 @@ function initEnemyShader() {
     console.log("enemy shader initialized");
 }
 
-function Enemy() {
-	this.initParameters();
+function Enemy(theme) {
+	this.initParameters(theme);
 
 	// cree un nouveau buffer sur le GPU et l'active
 	this.vertexBuffer = gl.createBuffer();
@@ -69,25 +69,25 @@ function Enemy() {
     console.log("enemy initialized");
 }
 
-Enemy.prototype.initParameters = function() {
+Enemy.prototype.initParameters = function(theme) {
 	this.width = 0.2;
 	this.height = 0.2;
 	this.position = [0.5, 1.0];
 	this.status = "alive";
 	randomInt = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
 	this.exploding = [
-		this.setImage("img/exploding1.png"),
-		this.setImage("img/exploding2.png"),
-		this.setImage("img/exploding3.png"),
-		this.setImage("img/exploding4.png"),
-		this.setImage("img/exploding5.png"),
+		this.setImage("img/"+theme+"/explosion/exploding1.png"),
+		this.setImage("img/"+theme+"/explosion/exploding2.png"),
+		this.setImage("img/"+theme+"/explosion/exploding3.png"),
+		this.setImage("img/"+theme+"/explosion/exploding4.png"),
+		this.setImage("img/"+theme+"/explosion/exploding5.png"),
 	];
-	this.maTexture = this.setImage("img/enemy" + randomInt + ".png");
+	this.maTexture = this.setImage("img/"+theme+"/enemy/enemy"+randomInt+".png");
 }
 
 Enemy.prototype.setParameters = function(elapsed) {
 	// on pourrait animer des choses ici
-	
+
 }
 
 Enemy.prototype.setPosition = function(x,y) {
