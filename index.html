@@ -266,6 +266,8 @@ void main(void) {
     // Constantes pour les vaisseaux ennemis
     var NOMBRE_ENNEMIS = 10;        // Nombre d'ennemis dans le niveau
     var VITESSE_VAISSEAUX = 0.003;  // Vitesse des vaisseaux ennemis
+    var intervalleExplosion = 75;
+    var enemyExploding = false;
 
     var lateralVariation = 0.0;
 
@@ -561,33 +563,33 @@ void main(void) {
     {
         for (var i=0; i<enemies.length; i++)
         {
-
-            var exploding = false;
-
-            if (enemies[i].status == "alive")
+            if (!enemyExploding)
             {
-                for(var j=0; j<missiles.length; j++)
+                if (enemies[i].status == "alive")
                 {
-                    if (colisionTir(enemies[i], j, missiles[j]))
-                        break;
+                    for(var j=0; j<missiles.length; j++)
+                    {
+                        if (colisionTir(enemies[i], j, missiles[j]))
+                            break;
+                    }
+
+                    colisionBordEcran(enemies[i]);
+                    colisionSpaceship(enemies[i]);
                 }
 
-                colisionBordEcran(enemies[i]);
-                colisionSpaceship(enemies[i]);
+
+                if (enemies[i].status == "exploding")
+                {
+                    explosion(enemies[i]);
+                    enemies[i].status = "exploded";
+                    enemyExploding=true;
+                    playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
+                }
             }
-
-
-            if (enemies[i].status == "exploding")
-            {
-                explosion(enemies[i]);
-                enemies[i].status = "exploded";
-                playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
-            }
-
             if (enemies[i].status == "exploded")
             {
                 var indice = i;
-                setTimeout(function () {enemies.splice(indice, 1);}, 500);
+                setTimeout(function () {enemies.splice(indice, 1); enemyExploding=false;}, intervalleExplosion*5);
                 enemies[i].status = "erased";
                 createEnemy();
             }
@@ -678,7 +680,6 @@ void main(void) {
 
     function explosion (ennemy)
     {
-        var intervalleExplosion = 75;
         setTimeout(function () {
         ennemy.maTexture = ennemy.exploding[0];
         ennemy.setupTexture();
@@ -721,6 +722,7 @@ void main(void) {
     // Réinitialise le jeu avec le theme passé en paramètre
     function resetGame (game_theme) {
         enemies.splice(0, enemies.length);
+        missiles.splice(0, missiles.length);
         initLife();
         initScore();
         theme = game_theme;
@@ -763,7 +765,7 @@ void main(void) {
     <nav class="collapse navbar-collapse bs-navbar-collapse">
       <ul class="nav navbar-nav">
         <li>
-          <a id="muteLink" href="#" onclick="window.location.reload()">New Game</a>
+          <a id="muteLink" href="#" onclick="resetGame('starwars')">New Game</a>
         </li>
         <li>
           <a id="muteLink" href="#">Score</a>

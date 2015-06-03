@@ -90,6 +90,10 @@ Enemy.prototype.setParameters = function(elapsed) {
 
 }
 
+Enemy.prototype.setId = function(id) {
+	this.id = id;
+}
+
 Enemy.prototype.setPosition = function(x,y) {
 	this.position = [x,y];
 }
