@@ -33,6 +33,8 @@
     life = init_life;
     init_score = 0;
     score = init_score;
+    init_shoot = 0;
+    nb_shoot = init_shoot;
     var theme = "starwars";
 
     // Constantes pour les vaisseaux ennemis
@@ -371,6 +373,7 @@ void main(void) {
                 missiles[missiles.length-1].y = spaceship.position[1];
                 missiles[missiles.length-1].setPosition(missiles[missiles.length-1].x, missiles[missiles.length-1].y);
                 playSound("sounds/shoot.wav");
+                increaseShoot();
                 keyAlreadyPressed = "active";
             }
             else if (keyAlreadyPressed == "relache")
@@ -459,6 +462,7 @@ void main(void) {
         // Initialisation des paramètres du jeu
         initLife();     // Initialisation de la vie
         initScore();    // Initialisation des scores
+        initShoot();    // Initialisation des shoots
 
         // la couleur de fond sera noire
         //gl.clearColor(0.0, 1.0, 0.0, 1.0);
@@ -697,7 +701,7 @@ void main(void) {
         }, intervalleExplosion*4);
     }
 
-    function initLife (){document.getElementById("life").innerHTML = init_life;}
+    function initLife (){document.getElementById("life").innerHTML = init_life; life = init_life;}
 
     function decreaseLife (){
         if (1<life)
@@ -710,9 +714,11 @@ void main(void) {
         }
     }
 
-    function initScore (){document.getElementById("score").innerHTML = init_score;}
-
+    function initScore (){document.getElementById("score").innerHTML = init_score; score = init_score;}
     function increaseScore (){document.getElementById("score").innerHTML = ++score;}
+
+    function initShoot (){document.getElementById("shoot").innerHTML = init_shoot; nb_shoot = init_shoot}
+    function increaseShoot (){document.getElementById("shoot").innerHTML = ++nb_shoot;}
 
     // Réinitialise le jeu avec le theme passé en paramètre
     function resetGame (game_theme) {
@@ -720,6 +726,7 @@ void main(void) {
         missiles.splice(0, missiles.length);
         initLife();
         initScore();
+        initShoot();
         theme = game_theme;
         spaceship = new Spaceship(theme);
         for (var i=0; i<NOMBRE_ENNEMIS; i++)
@@ -768,8 +775,8 @@ void main(void) {
         <li>
           <a id="muteLink" href="#">Life <span id="life"><span></a>
         </li>
-        <li>
-          <a id="muteLink" href="#">Power</a>
+         <li>
+          <a id="muteLink" href="#">Shoot <span id="shoot"><span></a>
         </li>
         <li>
           <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
