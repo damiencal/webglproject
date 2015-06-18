@@ -763,10 +763,10 @@ void main(void) {
           <a id="muteLink" href="#" onclick="resetGame('starwars')">New Game</a>
         </li>
         <li>
-          <a id="muteLink" href="#">Score</a>
+          <a id="muteLink" href="#">Score <span id="score"><span></a>
         </li>
         <li>
-          <a id="muteLink" href="#">Life</a>
+          <a id="muteLink" href="#">Life <span id="life"><span></a>
         </li>
         <li>
           <a id="muteLink" href="#">Power</a>
@@ -778,9 +778,6 @@ void main(void) {
     </nav>
   </div>
 </header>
-
-    <div>Life : <span id="life"><span></div>
-    <div>Score : <span id="score"><span></div>
     <div id="starwars" onclick="resetGame(this.id)">Starwars</div>
     <div id="requin" onclick="resetGame(this.id)">Requin</div>
     <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
