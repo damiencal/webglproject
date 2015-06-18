@@ -30,8 +30,8 @@ function Shoot() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
 
 	// un tableau contenant les positions des sommets (sur CPU donc)
-	var wo2 = 0.5*this.width;
-	var ho2 = 0.5*this.height;
+	var wo2 = 0.3*this.width;
+	var ho2 = 0.8*this.height;
 
 	var vertices = [
 		-wo2,-ho2, -0.5,

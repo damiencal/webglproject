@@ -18,6 +18,49 @@
 <script type="text/javascript" src="enemy.js"></script>
 <script type="text/javascript" src="shoot.js"></script>
 
+<script type="text/javascript">
+    //Globals
+    // Objets graphiques
+    var fbo; // le FBO utilis√© pour rendre la texture de hauteur
+    var heightfield; // l'objet heightfield, sa g√©om√©trie, son shader
+    var background; // l'objet background, sa g√©om√©trie, son shader
+    var spaceship; // l'objet spaceship, sa g√©om√©trie, son shader
+    var enemies = new Array();      // Tableau qui contient les objets Vaisseau
+    var missiles = new Array();     // Tableau qui contient les objets missile
+
+    // ParamËtres du jeu
+    init_life = 5;
+    life = init_life;
+    init_score = 0;
+    score = init_score;
+    var theme = "starwars";
+
+    // Constantes pour les vaisseaux ennemis
+    var NOMBRE_ENNEMIS = 15;        // Nombre d'ennemis dans le niveau
+    var VITESSE_VAISSEAUX = 0.01;  // Vitesse des vaisseaux ennemis
+    var intervalleExplosion = 75;
+    var enemyExploding = false;
+
+    var lateralVariation = 0.0;
+
+    // Constantes pour le spaceship
+    var DEPLACEMENTS_LATERAL_VAISSEAU = 0.05; // Vitesse de deplacement du vaisseau
+    var MAX_RANGE_LEFT_VAISSEAU = -0.9; // Limite ‡ gauche de l'Ècran du vaisseau
+    var MAX_RANGE_RIGHT_VAISSEAU = 0.9; // Limite ‡ droite de l'Ècran du vaisseau
+    var MAX_RANGE_BOTTOM_VAISSEAU = -0.6; // Limite en bas de l'Ècran du vaisseau
+
+    // Gestion des missiles
+    var VITESSE_MISSILE = 0.035;
+
+    // Variable pour gÈrer la pression sur la touche de tir
+    var keyAlreadyPressed = "inactive";
+
+    // Variable pour jouer les sons
+    var audio = new Audio();
+    var mute = false;
+</script>
+
+
 <script id="heightfield-vs" type="x-shader/x-vertex">
     // *** le vertex shader ***
     attribute vec3 aVertexPosition; // la position du sommet
@@ -124,7 +167,6 @@ vec3 shade(in vec3 n,in float d) {
     vec3 li = vec3(1.0,0.3,1.0);
 
     vec3 r = reflect(l, n);
-    // TODO : le shading !
     // la fonction prend en entr√©e la normale du terrain et sa profondeur
     //lo = (ka + kd * (normal*l) + ks * (v*r)^q) * (Li/r^2);
     return (ka + kd * dot(n,l) + ks * pow(dot(v,r), 112.0)) * (li);
@@ -247,47 +289,6 @@ void main(void) {
 </script>
 
 <script type="text/javascript">
-
-    // Objets graphiques
-    var fbo; // le FBO utilis√© pour rendre la texture de hauteur
-    var heightfield; // l'objet heightfield, sa g√©om√©trie, son shader
-    var background; // l'objet background, sa g√©om√©trie, son shader
-    var spaceship; // l'objet spaceship, sa g√©om√©trie, son shader
-    var enemies = new Array();      // Tableau qui contient les objets Vaisseau
-    var missiles = new Array();     // Tableau qui contient les objets missile
-
-    // ParamËtres du jeu
-    init_life = 5;
-    life = init_life;
-    init_score = 0;
-    score = init_score;
-    theme = "starwars";
-
-    // Constantes pour les vaisseaux ennemis
-    var NOMBRE_ENNEMIS = 10;        // Nombre d'ennemis dans le niveau
-    var VITESSE_VAISSEAUX = 0.003;  // Vitesse des vaisseaux ennemis
-    var intervalleExplosion = 75;
-    var enemyExploding = false;
-
-    var lateralVariation = 0.0;
-
-    // Constantes pour le spaceship
-    var DEPLACEMENTS_LATERAL_VAISSEAU = 0.03; // Vitesse de deplacement du vaisseau
-    var MAX_RANGE_LEFT_VAISSEAU = -0.9; // Limite ‡ gauche de l'Ècran du vaisseau
-    var MAX_RANGE_RIGHT_VAISSEAU = 0.9; // Limite ‡ droite de l'Ècran du vaisseau
-    var MAX_RANGE_BOTTOM_VAISSEAU = -0.6; // Limite en bas de l'Ècran du vaisseau
-
-    // Gestion des missiles
-    var VITESSE_MISSILE = 0.02;
-
-    // Variable pour gÈrer la pression sur la touche de tir
-    var keyAlreadyPressed = "inactive";
-
-    // Variable pour jouer les sons
-    var audio = new Audio();
-    var mute = false;
-
-
     function drawScene() {
         // initialisation du viewport
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -345,10 +346,9 @@ void main(void) {
         currentlyPressedKeys[event.keyCode] = true;
     }
 
-
     function handleKeyUp(event) {
         // Tir d'un missile
-        if (event.keyCode == 17)
+        if (event.keyCode == 17 || event.keyCode == 90)
             keyAlreadyPressed = "relache";
 
         currentlyPressedKeys[event.keyCode] = false;
@@ -363,7 +363,7 @@ void main(void) {
             // faire quelque chose...
         }
         // Tir d'un missile
-        if (currentlyPressedKeys[17]) {
+        if (currentlyPressedKeys[17] || currentlyPressedKeys[90]) {
             if (keyAlreadyPressed == "inactive")
             {
                 missiles.push(new Shoot);   // Ajout d'un missiles ‡ la liste des missiles
@@ -405,7 +405,6 @@ void main(void) {
         spaceship.setPosition(newx,newy);
     }
 
-
     // animation
     var lastTime = 0;
     function animate() {
@@ -431,7 +430,6 @@ void main(void) {
         drawScene();
         animate();
     }
-
 
     function webGLStart() {
         // initialisation du canvas et des objets OpenGL
@@ -552,7 +550,6 @@ void main(void) {
         }
     }
 
-
     /////////// Fonction qui gËre la destruction des vaisseaux ennemi ///////////
     // 1. Cas d'un vaisseau ennemi qui n'a pas Ètait dÈtruit et qui arrive au bout
     // 2. Cas d'une colision entre un vaisseau ennemi et le spaceship
@@ -585,6 +582,7 @@ void main(void) {
                     enemyExploding=true;
                     playSound("sounds/explosion.wav");  // Si un vaisseau est en train d'exploser, on joue le son
                 }
+
             }
             if (enemies[i].status == "exploded")
             {
@@ -595,7 +593,6 @@ void main(void) {
             }
         }
     }
-
 
     // Fonction qui dÈtecte si le vaisseau passÈ en paramËtre entre en colision avec le spaceship principal
     // Si tel est le cas : On passe son statut ‡ "exploding"
@@ -644,8 +641,6 @@ void main(void) {
             decreaseLife();
         }
     }
-
-
 
     // Fonction qui dÈtecte si le vaisseau passÈ en paramËtre entre en colision avec un shoot du spaceship
     // Si tel est le cas : On affiche l'explosion puis on remove le vaisseau plus tard
