@@ -29,7 +29,7 @@
     var missiles = new Array();     // Tableau qui contient les objets missile
 
     // Paramètres du jeu
-    init_life = 5;
+    init_life = 7;
     life = init_life;
     init_score = 0;
     score = init_score;
@@ -37,7 +37,7 @@
 
     // Constantes pour les vaisseaux ennemis
     var NOMBRE_ENNEMIS = 15;        // Nombre d'ennemis dans le niveau
-    var VITESSE_VAISSEAUX = 0.01;  // Vitesse des vaisseaux ennemis
+    var VITESSE_VAISSEAUX = 0.0085;  // Vitesse des vaisseaux ennemis
     var intervalleExplosion = 75;
     var enemyExploding = false;
 
@@ -635,7 +635,7 @@ void main(void) {
     function colisionBordEcran (curantEnemy)
     {
         // Si le vaisseau ennemi entre en colision avec le bord inférieur de l'écran
-        if (curantEnemy.y < spaceship.position[1])
+        if (curantEnemy.y < -0.9)
         {
             curantEnemy.status = "exploding";
             decreaseLife();
