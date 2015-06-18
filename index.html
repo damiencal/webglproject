@@ -715,10 +715,16 @@ void main(void) {
     }
 
     function initScore (){document.getElementById("score").innerHTML = init_score; score = init_score;}
-    function increaseScore (){document.getElementById("score").innerHTML = ++score;}
+    function increaseScore (){
+        document.getElementById("score").innerHTML = ++score;
+        document.getElementById("ratio").innerHTML = 1;
+    }
 
     function initShoot (){document.getElementById("shoot").innerHTML = init_shoot; nb_shoot = init_shoot}
-    function increaseShoot (){document.getElementById("shoot").innerHTML = ++nb_shoot;}
+    function increaseShoot (){
+        document.getElementById("shoot").innerHTML = ++nb_shoot;
+        document.getElementById("ratio").innerHTML = Math.round((parseFloat(score)/parseFloat(nb_shoot))*100)/100;
+    }
 
     // Réinitialise le jeu avec le theme passé en paramètre
     function resetGame (game_theme) {
@@ -777,6 +783,9 @@ void main(void) {
         </li>
          <li>
           <a id="muteLink" href="#">Shoot <span id="shoot"><span></a>
+        </li>
+         <li>
+          <a id="muteLink" href="#">Ratio <span id="ratio"><span></a>
         </li>
         <li>
           <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
