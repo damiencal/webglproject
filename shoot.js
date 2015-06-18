@@ -69,11 +69,11 @@ function Shoot() {
     console.log("shoot initialized");
 }
 
-Shoot.prototype.initParameters = function() {
+Shoot.prototype.initParameters = function(theme) {
 	this.width = 0.05;
 	this.height = 0.05;
 	this.position = [0.0, -0.55];
-	this.maTexture = initTexture("img/shoot.png");
+	this.maTexture = initTexture("img/"+theme+"/shoot.png");
 }
 
 Shoot.prototype.setParameters = function(elapsed) {
