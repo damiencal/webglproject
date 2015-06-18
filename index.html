@@ -366,7 +366,7 @@ void main(void) {
         if (currentlyPressedKeys[17] || currentlyPressedKeys[90]) {
             if (keyAlreadyPressed == "inactive")
             {
-                missiles.push(new Shoot);   // Ajout d'un missiles à la liste des missiles
+                missiles.push(new Shoot(theme));   // Ajout d'un missiles à la liste des missiles
                 missiles[missiles.length-1].x = spaceship.position[0];
                 missiles[missiles.length-1].y = spaceship.position[1];
                 missiles[missiles.length-1].setPosition(missiles[missiles.length-1].x, missiles[missiles.length-1].y);

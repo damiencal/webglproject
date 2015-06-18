@@ -22,8 +22,8 @@ function initShootShader() {
     console.log("shoot shader initialized");
 }
 
-function Shoot() {
-	this.initParameters();
+function Shoot(theme) {
+	this.initParameters(theme);
 
 	// cree un nouveau buffer sur le GPU et l'active
 	this.vertexBuffer = gl.createBuffer();
