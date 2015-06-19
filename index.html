@@ -3,7 +3,6 @@
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
 
 <link href="vendor/bootstrap.min.css" rel="stylesheet">
-<link href="vendor/material.min.css" rel="stylesheet">
 
 <script type="text/javascript" src="gl-matrix.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
@@ -39,7 +38,7 @@
 
     // Constantes pour les vaisseaux ennemis
     var NOMBRE_ENNEMIS = 15;        // Nombre d'ennemis dans le niveau
-    var VITESSE_VAISSEAUX = 0.0085;  // Vitesse des vaisseaux ennemis
+    var VITESSE_VAISSEAUX = 0.009;  // Vitesse des vaisseaux ennemis
     var intervalleExplosion = 75;
     var enemyExploding = false;
 
@@ -831,10 +830,9 @@ void main(void) {
                           <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
                         </li>
                         <li>
-                          <a id="requin" onclick="resetGame(this.id)" href="#">Requin</a>
-                        </li>
-                        <li>
-                          <a id="starwars" onclick="resetGame(this.id)" href="#">Starwars</a>
+                            <a href="#" style="display: inline-block" >Themes :</a><br>
+                          <a id="requin" style="display: inline-block" onclick="resetGame(this.id)" href="#"><button type="button" class="btn btn-primary">Requin</button></a>
+                          <a id="starwars" style="display: inline-block" onclick="resetGame(this.id)" href="#"><button type="button" class="btn btn-primary">Starwars</button></a>
                         </li>
                     </ul>
                 </div>
