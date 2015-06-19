@@ -751,7 +751,7 @@ void main(void) {
         else
         {
             document.getElementById("life").innerHTML = 0;
-            //alert("Game Over");
+            alert("Game Over");
             window.location.reload();
         }
     }
@@ -803,59 +803,46 @@ void main(void) {
 
 
 <body onload="webGLStart();">
-        <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
-  <div class="container">
-    <div class="navbar-header">
-      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a href="../" class="navbar-brand">Stargate</a>
-    </div>
-    <nav class="collapse navbar-collapse bs-navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li>
-          <a id="muteLink" href="#" onclick="resetGame('starwars')">New Game</a>
-        </li>
-        <li>
-          <a id="muteLink" href="#">Score <span id="score"><span></a>
-        </li>
-        <li>
-          <a id="muteLink" href="#">Life <span id="life"><span></a>
-        </li>
-         <li>
-          <a id="muteLink" href="#">Shoot <span id="shoot"><span></a>
-        </li>
-         <li>
-          <a id="muteLink" href="#">Ratio <span id="ratio"><span></a>
-        </li>
-        <li>
-          <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-            <div class="container-fluid">
-                <div class="row row-offcanvas row-offcanvas-left">
-
-                    <!--sidebar-->
-                    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-                        <div data-spy="affix" data-offset-top="45" data-offset-bottom="90">
-                            <ul class="nav" id="sidebar-nav">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#section1">Section 1</a></li>
-                                <li><a href="#section2">Section 2</a></li>
-                                <li><a href="#section3">Section 3</a></li>
-                                <li><a href="#">Holo Theme</a></li>
-                            </ul>
-                        </div>
-                    </div><!--/sidebar-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <!--sidebar-->
+            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                <div data-spy="affix" data-offset-top="45" data-offset-bottom="90">
+                    <ul class="nav" id="sidebar-nav">
+                        <li>
+                          <a href="#"><strong>Stargate</strong></a>
+                        </li>
+                        <li>
+                          <a id="muteLink" href="#" onclick="resetGame('starwars')">New Game</a>
+                        </li>
+                        <li>
+                          <a id="muteLink" href="#">Score <span id="score"><span></a>
+                        </li>
+                        <li>
+                          <a id="muteLink" href="#">Life <span id="life"><span></a>
+                        </li>
+                         <li>
+                          <a id="muteLink" href="#">Shoot <span id="shoot"><span></a>
+                        </li>
+                         <li>
+                          <a id="muteLink" href="#">Ratio <span id="ratio"><span></a>
+                        </li>
+                        <li>
+                          <a id="muteLink" href="#" onclick="toggleMute()">Mute</a>
+                        </li>
+                        <li>
+                          <a id="requin" onclick="resetGame(this.id)" href="#">Requin</a>
+                        </li>
+                        <li>
+                          <a id="starwars" onclick="resetGame(this.id)" href="#">Starwars</a>
+                        </li>
+                    </ul>
                 </div>
-</header>
-    <div id="starwars" onclick="resetGame(this.id)">Starwars</div>
-    <div id="requin" onclick="resetGame(this.id)">Requin</div>
-    <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+            </div><!--/sidebar-->
+            <div class="col-xs-6">
+                <canvas id="SpaceShip" style="border: none;" width="800" height="800"></canvas>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
